@@ -6,6 +6,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include <string>
+
 
 namespace QTest
 {
@@ -13,7 +15,7 @@ template<>
 char* toString<TheStruct::ProtocolEnum>(TheStruct::ProtocolEnum const& v)
 {
     auto const r = new char[5];
-    strncpy_s(r, 5, qPrintable(QString::number(static_cast<quint16>(v), 16)), 5);
+    strncpy(r, qPrintable(QString::number(static_cast<quint16>(v), 16)), 5);
     return r;
 }
 } // namespace QTest
