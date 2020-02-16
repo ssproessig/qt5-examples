@@ -37,5 +37,19 @@ endif()
 
 
 
+add_executable(StructSerializationTest
+    StructSerialization/StructSerializationTest.h
+    StructSerialization/StructSerializationTest.cpp
+    StructSerialization/TheStruct.h
+)
+if(WIN32)
+    set_target_properties(StructSerializationTest PROPERTIES WIN32_EXECUTABLE ON)
+endif()
+target_compile_options(StructSerializationTest PRIVATE ${COMPILE_OPTIONS})
+target_link_libraries(StructSerializationTest Qt5::Core Qt5::Test)
+add_test(StructSerializationTest COMMAND StructSerializationTest)
+
+
+
 include(CTest)
 enable_testing(true)
