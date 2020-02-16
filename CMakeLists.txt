@@ -48,7 +48,7 @@ if(WIN32)
 endif()
 target_compile_options(StructSerializationTest PRIVATE ${COMPILE_OPTIONS})
 target_link_libraries(StructSerializationTest Qt5::Core Qt5::Test)
-add_test(StructSerializationTest COMMAND StructSerializationTest)
+add_test(NAME StructSerializationTest COMMAND StructSerializationTest)
 
 
 
