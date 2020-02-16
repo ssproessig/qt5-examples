@@ -27,3 +27,10 @@ struct TheStruct
 
     bool active = false;
 };
+
+
+QDataStream& operator<<(QDataStream&, TheStruct const&);
+QDataStream& operator>>(QDataStream&, TheStruct&);
+
+QDataStream& operator<<(QDataStream&, TheStruct::SubStruct const&);
+QDataStream& operator>>(QDataStream&, TheStruct::SubStruct&);

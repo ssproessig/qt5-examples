@@ -37,7 +37,7 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
         buffer.open(QIODevice::WriteOnly);
         QDataStream serializer(&buffer);
 
-        // FIXME: serializer << in;
+        serializer << in;
     }
 
     qDebug() << "serialized to " << hex << serialized;
@@ -48,7 +48,7 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
         buffer.open(QIODevice::ReadOnly);
         QDataStream serializer(&buffer);
 
-        // FIXME: serializer >> out;
+        serializer >> out;
     }
 
     // ASSERT - check deserialized values
