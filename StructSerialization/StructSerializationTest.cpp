@@ -2,6 +2,10 @@
 
 #include "TheStruct.h"
 
+#include <QBuffer>
+#include <QDataStream>
+#include <QDebug>
+
 
 void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
 {
@@ -14,8 +18,26 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
             TheStruct::ProtocolEnum::Valid,
             true};
 
-    // ACT - FIXME: serialize / deserialize here
-    auto const out = in;
+    // ACT - serialize / deserialize
+    QByteArray serialized;
+    {
+        QBuffer buffer(&serialized);
+        buffer.open(QIODevice::WriteOnly);
+        QDataStream serializer(&buffer);
+
+        // FIXME: serializer << in;
+    }
+
+    qDebug() << "serialized to " << hex << serialized;
+
+    TheStruct out;
+    {
+        QBuffer buffer(&serialized);
+        buffer.open(QIODevice::ReadOnly);
+        QDataStream serializer(&buffer);
+
+        // FIXME: serializer >> out;
+    }
 
     // ASSERT - check deserialized values
     QCOMPARE(out.id, QString("id"));
