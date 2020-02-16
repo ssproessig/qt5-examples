@@ -40,7 +40,9 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
         serializer << in;
     }
 
-    qDebug() << "serialized to " << hex << serialized;
+    qDebug() << "serialized to " << serialized.size() << "bytes: " << hex << serialized;
+    auto const compressed = qCompress(serialized, 9);
+    qDebug() << "compressed to " << compressed.size() << "bytes: " << hex << compressed;
 
     TheStruct out;
     {
