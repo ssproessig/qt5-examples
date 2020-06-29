@@ -8,7 +8,7 @@ project(Qt5Examples LANGUAGES CXX)
 
 
 
-find_package(Qt5 5.12 REQUIRED COMPONENTS Core Test)
+find_package(Qt5 5.15 REQUIRED COMPONENTS Core Test)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
