@@ -44,7 +44,7 @@ add_executable(StructSerializationTest WIN32
     StructSerialization/TheStructSerialization.cpp
 )
 target_compile_options(StructSerializationTest PRIVATE ${COMPILE_OPTIONS})
-target_link_libraries(StructSerializationTest Qt5::Core Qt5::Test)
+target_link_libraries(StructSerializationTest Qt::Core Qt::Test)
 add_test(NAME StructSerializationTest COMMAND StructSerializationTest)
 
 
