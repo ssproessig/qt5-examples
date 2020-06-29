@@ -8,7 +8,7 @@ project(Qt5Examples LANGUAGES CXX)
 
 
 
-find_package(Qt5 5.15 REQUIRED COMPONENTS Core Test)
+find_package(Qt5 5.15 REQUIRED COMPONENTS Core Network Test)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
@@ -38,6 +38,20 @@ endif()
 
 
 add_subdirectory(StructSerialization)
+
+
+
+add_executable(SslTest::Server WIN32
+    SslTest/Server.cpp
+)
+target_compile_options(SslTest::Server PRIVATE ${COMPILE_OPTIONS})
+target_link_libraries(SslTest::Server Qt::Core Qt::Network)
+
+add_executable(SslTest::Client WIN32
+    SslTest/Client.cpp
+)
+target_compile_options(SslTest::Client PRIVATE ${COMPILE_OPTIONS})
+target_link_libraries(SslTest::Client Qt::Core Qt::Network)
 
 
 
