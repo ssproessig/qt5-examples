@@ -47,7 +47,7 @@ void setupSslConfigurationFor(QSslSocket& s, QSslKey const& key, QSslCertificate
     // alter the sockets existing configuration
     auto sslConfig = s.sslConfiguration();
     {
-        // enfore TLS v1.3
+        // enforce TLS v1.3
         sslConfig.setProtocol(QSsl::TlsV1_3);
 
         // don't use a CA chain - only our own Certificate Authority is allowed
@@ -58,7 +58,7 @@ void setupSslConfigurationFor(QSslSocket& s, QSslKey const& key, QSslCertificate
         sslConfig.setLocalCertificate(cert);
 
         // verify the connection peer's certificate - fail connection if it fails
-        // not: use QSslSocket::QueryPeer to only warn if the peer verification failed - discouraged
+        // note: QSslSocket::QueryPeer will only warn if the peer verification failed - discouraged
         sslConfig.setPeerVerifyMode(QSslSocket::VerifyPeer);
     }
     s.setSslConfiguration(sslConfig);
