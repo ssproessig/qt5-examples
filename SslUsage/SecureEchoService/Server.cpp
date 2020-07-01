@@ -10,6 +10,15 @@ namespace
 {
 struct SecureServer final : QTcpServer
 {
+    QSslKey key;
+    QSslCertificate cert;
+
+    explicit SecureServer(QCommandLineParser const& parser)
+    {
+        key = loadKey(parser.value("key"), parser.value("pwd").toUtf8());
+        cert = loadCert(parser.value("cert"));
+    }
+
     void incomingConnection(qintptr const aSocketDescriptor) override
     {
         auto* sslSocket = new QSslSocket(this);
@@ -21,7 +30,7 @@ struct SecureServer final : QTcpServer
             });
             addPendingConnection(sslSocket);
 
-            setupSslConfigurationFor(*sslSocket, loadKey("server"), loadCert());
+            setupSslConfigurationFor(*sslSocket, key, cert);
 
             sslSocket->startServerEncryption();
         }
@@ -46,6 +55,12 @@ int main(int argc, char** argv)
     (void) parser.addOption({{"p", "port"}, "port to listen to", "port", "9876"});
     (void) parser.addOption( //
             {{"i", "interface"}, "interface to listen to", "interface", "127.0.0.1"});
+    (void) parser.addOption( //
+            {{"c", "cert"}, "Client certificate to use", "cert", ":/Certificate"});
+    (void) parser.addOption( //
+            {{"k", "key"}, "Client key to use", "key", ":/Key"});
+    (void) parser.addOption( //
+            {{"w", "pwd"}, "Key password to use", "pwd", "server"});
     parser.process(QCoreApplication::arguments());
 
     auto const interface = QHostAddress(parser.value("interface"));
@@ -56,7 +71,7 @@ int main(int argc, char** argv)
     // actual socket communication part - same as for RawEchoServer, only using SecureServer
     try
     {
-        SecureServer srv;
+        SecureServer srv(parser);
 
         (void) QObject::connect(&srv, &QTcpServer::newConnection, [&srv]() {
             auto* const client = srv.nextPendingConnection();

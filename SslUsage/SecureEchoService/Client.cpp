@@ -17,10 +17,21 @@ int main(int argc, char** argv)
     (void) parser.addOption({{"p", "port"}, "port to connect to", "port", "9876"});
     (void) parser.addOption( //
             {{"i", "host"}, "host to connect to", "host", "127.0.0.1"});
+    (void) parser.addOption( //
+            {{"c", "cert"}, "Client certificate to use", "cert", ":/Certificate"});
+    (void) parser.addOption( //
+            {{"k", "key"}, "Client key to use", "key", ":/Key"});
+    (void) parser.addOption( //
+            {{"w", "pwd"}, "Key password to use", "pwd", "client_01"});
+
     parser.process(QCoreApplication::arguments());
 
     auto const host = parser.value("host");
     auto const port = parser.value("port").toUShort();
+
+    auto const certFileName = parser.value("cert");
+    auto const keyFileName = parser.value("key");
+    auto const keyPwd = parser.value("pwd");
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +43,7 @@ int main(int argc, char** argv)
     //       for secure connection asynchronously -QSslSocket has some internal buffering,
     //       you can even send already...
     QSslSocket s;
-    setupSslConfigurationFor(s, loadKey("client_01"), loadCert());
+    setupSslConfigurationFor(s, loadKey(keyFileName, "client_01"), loadCert(certFileName));
 
     QObject::connect(&s, QOverload<SslErrs>::of(&QSslSocket::sslErrors), [&s](SslErrs errors) {
         dumpSslErrors(errors, s);

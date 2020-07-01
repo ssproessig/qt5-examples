@@ -22,9 +22,9 @@ QByteArray readFromQrc(QString const& aFileName)
 }
 
 
-QSslKey loadKey(QByteArray const& pwd)
+QSslKey loadKey(QString const& aFileName, QByteArray const& pwd)
 {
-    auto const key = QSslKey(readFromQrc(":/Key"), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, pwd);
+    auto const key = QSslKey(readFromQrc(aFileName), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, pwd);
     qDebug() << "error loading key?" << key.isNull();
     qInfo() << "Loaded key: " << key;
 
@@ -32,9 +32,9 @@ QSslKey loadKey(QByteArray const& pwd)
 }
 
 
-QSslCertificate loadCert()
+QSslCertificate loadCert(QString const& aFileName)
 {
-    auto const cert = QSslCertificate(readFromQrc(":/Certificate"), QSsl::Pem);
+    auto const cert = QSslCertificate(readFromQrc(aFileName), QSsl::Pem);
     qDebug() << "error loading cert?" << cert.isNull();
     qInfo() << "Loaded certificate: " << cert;
 
