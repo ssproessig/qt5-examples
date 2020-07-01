@@ -37,21 +37,8 @@ endif()
 
 
 
+add_subdirectory(SslUsage)
 add_subdirectory(StructSerialization)
-
-
-
-add_executable(SslTest::Server WIN32
-    SslTest/Server.cpp
-)
-target_compile_options(SslTest::Server PRIVATE ${COMPILE_OPTIONS})
-target_link_libraries(SslTest::Server Qt::Core Qt::Network)
-
-add_executable(SslTest::Client WIN32
-    SslTest/Client.cpp
-)
-target_compile_options(SslTest::Client PRIVATE ${COMPILE_OPTIONS})
-target_link_libraries(SslTest::Client Qt::Core Qt::Network)
 
 
 
