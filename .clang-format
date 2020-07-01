@@ -53,6 +53,17 @@ Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 FixNamespaceComments: true
 IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"[^/]+"$'
+    Priority: 1
+  - Regex: '^".+"$'
+    Priority: 2
+  - Regex: '^<Q.+>$'
+    Priority: 3
+  - Regex: '^<[^/]+>$'
+    Priority: 4
+  - Regex: '^<.+>$'
+    Priority: 5
 IndentCaseLabels: true
 IndentPPDirectives: None
 IndentWidth: 4
