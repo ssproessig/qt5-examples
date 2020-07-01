@@ -37,15 +37,7 @@ endif()
 
 
 
-add_executable(StructSerializationTest WIN32
-    StructSerialization/StructSerializationTest.h
-    StructSerialization/StructSerializationTest.cpp
-    StructSerialization/TheStruct.h
-    StructSerialization/TheStructSerialization.cpp
-)
-target_compile_options(StructSerializationTest PRIVATE ${COMPILE_OPTIONS})
-target_link_libraries(StructSerializationTest Qt::Core Qt::Test)
-add_test(NAME StructSerializationTest COMMAND StructSerializationTest)
+add_subdirectory(StructSerialization)
 
 
 
