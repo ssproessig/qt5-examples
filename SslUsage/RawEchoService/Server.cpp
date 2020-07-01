@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
     if (!srv.listen(interface, port))
     {
-        qCritical() << "unable to bind to" << interface << ":" << port << "!";
+        qCritical() << "unable to listen to" << interface << ":" << port << "!";
         return 1;
     }
 
