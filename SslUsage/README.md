@@ -272,7 +272,161 @@ Certificate:
   what's hapenning
 
 ### Putting it all together - SecureEchoService
-TODO:
+#### secured Server
+The server uses the same code as the raw echo server, only replacing `QTcpServer` with
+`SecureServer`. `SecureServer` is a `QTcpServer` realization, that overwrites `void
+incomingConnection(qintptr const aSocketDescriptor)` and adds the SSL/TLS core there:
+
+```cpp
+void incomingConnection(qintptr const aSocketDescriptor) override
+{
+    auto* sslSocket = new QSslSocket(this);
+
+    if (sslSocket->setSocketDescriptor(aSocketDescriptor))
+    {
+        connect(sslSocket, QOverload<SslErrs>::of(&QSslSocket::sslErrors), [&](SslErrs errors) {
+            dumpSslErrors(errors, *sslSocket);
+        });
+        addPendingConnection(sslSocket);
+
+        setupSslConfigurationFor(*sslSocket, key, cert);
+
+        sslSocket->startServerEncryption();
+    }
+    else
+    {
+        sslSocket->deleteLater();
+    }
+}
+```
+
+with `setupSslConfigurationFor(<socket>, <this_peer_key>, <this_peer_cert>)` defined as
+
+```c++
+void setupSslConfigurationFor(QSslSocket& s, QSslKey const& key, QSslCertificate const& cert)
+{
+    // alter the sockets existing configuration
+    auto sslConfig = s.sslConfiguration();
+    {
+        // enforce TLS v1.3
+        sslConfig.setProtocol(QSsl::TlsV1_3);
+
+        // don't use a CA chain - only our own Certificate Authority is allowed
+        sslConfig.setCaCertificates({QSslCertificate(readFromQrc(":/CA"), QSsl::Pem)});
+
+        // load the passed certificate with the given key
+        sslConfig.setPrivateKey(key);
+        sslConfig.setLocalCertificate(cert);
+
+        // verify the connection peer's certificate - fail connection if it fails
+        // note: QSslSocket::QueryPeer will only warn if the peer verification failed - discouraged
+        sslConfig.setPeerVerifyMode(QSslSocket::VerifyPeer);
+    }
+    s.setSslConfiguration(sslConfig);
+}
+```
+
+#### secured Client
+The client basically uses the same logic as the raw echo client, but
+1. replaces `QTcpSocket` with `QSslSocket`
+2. configures the socket with `setupSslConfigurationFor(...)` as well
+3. uses `connectToHostEncrypted(...)` instead of `connectToHost(...)` and waits for the encrypted
+   connection to be established
+
+#### execution
+##### step 1 - start the server
+first we start the server into its own window
+```
+> F:\2019\qt5ex>start SslUsage\SecureEchoService\Debug\SslUsage.SecureServer.exe
+
+...
+20200701_215310.172  D  loadKey:28  error loading key? false
+20200701_215310.176  I  loadKey:29  Loaded key:  QSslKey(PrivateKey, RSA, 4096)
+20200701_215310.179  D  loadCert:38  error loading cert? false
+20200701_215310.182  I  loadCert:39  Loaded certificate:  QSslCertificate("1", "5c:57:ab:ab:07:39:b2:23:37:f7:55:36:a8:9c:2c:50:0a:7a:67:4c", "Ve7Pt6ETDb4w2QBhDhG1ug==", "CA", "server", QMap(), QDateTime(2020-07-01 19:20:05.000 UTC Qt::UTC), QDateTime(2020-07-31 19:20:05.000 UTC Qt::UTC))
+20200701_215310.201  D  main:106  secure echo server listening on QHostAddress("127.0.0.1") : 9876 !
+```
+ensure
+
+- the server is listening
+- neither `key` not `cert` had an error loading
+
+##### step 2 - connect the client w/ verification failing
+```
+F:\2019\qt5ex>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe
+
+20200701_215441.668  D  loadCert:38  error loading cert? false
+20200701_215441.672  I  loadCert:39  Loaded certificate:  QSslCertificate("1", "5c:57:ab:ab:07:39:b2:23:37:f7:55:36:a8:9c:2c:50:0a:7a:67:4e", "iRwlqgrODXY4RHdM2my3NA==", "CA", "client_01", QMap(), QDateTime(2020-07-01 19:26:41.000 UTC Qt::UTC), QDateTime(2020-07-31 19:26:41.000 UTC Qt::UTC))
+20200701_215441.684  D  loadKey:28  error loading key? false
+20200701_215441.692  I  loadKey:29  Loaded key:  QSslKey(PrivateKey, RSA, 4096)
+20200701_215441.699  I  main:58  connecting to "127.0.0.1" : 9876 ...
+20200701_215441.728  D  dumpSslErrors:86  SSL errors:
+20200701_215441.731  C  dumpSslErrors:89  "The host name did not match any of the valid hosts for this certificate"
+20200701_215441.736  D  dumpSslErrors:92  peer certificate chain:
+20200701_215441.741  D  dumpCert:70  ---
+20200701_215441.743  D  dumpCert:71  digest:  "55eecfb7a1130dbe30d900610e11b5ba"
+20200701_215441.747  D  dumpCert:72  serial:  "35633a35373a61623a61623a30373a33393a62323a32333a33373a66373a35353a33363a61383a39633a32633a35303a30613a37613a36373a3463"
+20200701_215441.756  D  dumpCert:73  ---subject
+20200701_215441.769  D  dumpCert:74  CN:  "server"
+20200701_215441.774  D  dumpCert:75  ORG: "github.com/ssproessig"
+20200701_215441.779  D  dumpCert:76  ---issuer
+20200701_215441.782  D  dumpCert:77  CN:  ("CA")
+20200701_215441.784  D  dumpCert:78  ORG: ("github.com/ssproessig")
+20200701_215441.787  D  dumpCert:79
+20200701_215441.793  D  dumpCert:70  ---
+20200701_215441.795  D  dumpCert:71  digest:  "29d034ad4cdee1a73f69c90fbfc81719"
+20200701_215441.799  D  dumpCert:72  serial:  "32643a35343a64613a61353a61643a61613a61623a63653a62353a32333a64313a61333a30373a66363a64313a39633a30313a35313a66663a3262"
+20200701_215441.807  D  dumpCert:73  ---subject
+20200701_215441.809  D  dumpCert:74  CN:  "CA"
+20200701_215441.812  D  dumpCert:75  ORG: "github.com/ssproessig"
+20200701_215441.817  D  dumpCert:76  ---issuer
+20200701_215441.819  D  dumpCert:77  CN:  ("CA")
+20200701_215441.829  D  dumpCert:78  ORG: ("github.com/ssproessig")
+20200701_215441.832  D  dumpCert:79
+20200701_215441.834  C  main:68  unable to connect securely
+```
+
+ensure neither `key` not `cert` had an error loading and note
+- handshake failed with `The host name did not match any of the valid hosts for this certificate`
+- the certificate chain is dumped, first the `server` certificated, then our `CA`
+
+Why did it fail? The server's log will not help us
+```
+20200701_215737.894  D  main::::operator():78  new client connected from "127.0.0.1" : 53010
+20200701_215738.013  D  main::::()::::operator():91  client from "127.0.0.1" : 53010 disconnected
+```
+obviously the client terminated the connection. Again, why Because per default we connect to
+`127.0.0.1` (where our server is listening per default). But this is not the server's certificate
+_Common Name_, it says `server`.
+
+Hence we need to make sure to either have the server's IP address as _Common Name_ (discouraged) or
+resolve `server` to where our server is currently running. Adding `127.0.0.1 server` to
+`C:\Windows\System32\drivers\etc\hosts` solves this for a test.
+
+Afterwards executing the client again leads to
+```
+F:\2019\qt5ex>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe --host server
+20200701_220121.338  D  loadCert:38  error loading cert? false
+20200701_220121.341  I  loadCert:39  Loaded certificate:  QSslCertificate("1", "5c:57:ab:ab:07:39:b2:23:37:f7:55:36:a8:9c:2c:50:0a:7a:67:4e", "iRwlqgrODXY4RHdM2my3NA==", "CA", "client_01", QMap(), QDateTime(2020-07-01 19:26:41.000 UTC Qt::UTC), QDateTime(2020-07-31 19:26:41.000 UTC Qt::UTC))
+20200701_220121.355  D  loadKey:28  error loading key? false
+20200701_220121.360  I  loadKey:29  Loaded key:  QSslKey(PrivateKey, RSA, 4096)
+20200701_220121.366  I  main:58  connecting to "server" : 9876 ...
+20200701_220121.400  I  main:62  we have secure communication
+20200701_220121.402  D  main:63  session cipher QSslCipher(name=TLS_AES_256_GCM_SHA384, bits=256, proto=TLSv1.3)
+20200701_220121.414  D  main::::operator():54  received:  "Welcome to SecureEchoServer!\nhello from secure client!"
+```
+and in the server
+```
+20200701_220121.382  D  main::::operator():78  new client connected from "127.0.0.1" : 53042
+20200701_220121.409  D  main::::()::::operator():85  echoing back:  "hello from secure client!"
+20200701_220121.418  D  main::::()::::operator():91  client from "127.0.0.1" : 53042 disconnected
+```
+
+So, now our client verified that it was talking to the correct server - done.
+
+Watching the exchange with Wireshark we can see the overall TLS v1.3 exchange
+
+![wireshark_tlsv1.3_exchange](wireshark_tlsv1.3_exchange.png)
 
 ### More Information on SSL/TLS
 - read the [excellent TLS v1.3 slides by Andy Brodie from the OWASP London 2018 summit][slides]
