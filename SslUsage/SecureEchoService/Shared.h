@@ -18,7 +18,8 @@ QByteArray readFromQrc(QString const& aFileName)
         return f.readAll();
     }
 
-    throw std::domain_error(QString("unable to read resource: %1").arg(aFileName).toStdString());
+    qCritical() << QString("unable to read resource: %1").arg(aFileName);
+    return {};
 }
 
 
