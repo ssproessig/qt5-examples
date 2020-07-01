@@ -69,47 +69,37 @@ int main(int argc, char** argv)
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // actual socket communication part - same as for RawEchoServer, only using SecureServer
-    try
-    {
-        SecureServer srv(parser);
+    SecureServer srv(parser);
 
-        (void) QObject::connect(&srv, &QTcpServer::newConnection, [&srv]() {
-            auto* const client = srv.nextPendingConnection();
-            qDebug() << "new client connected from" << //
-                    client->peerAddress().toString() << ":" << client->peerPort();
+    (void) QObject::connect(&srv, &QTcpServer::newConnection, [&srv]() {
+        auto* const client = srv.nextPendingConnection();
+        qDebug() << "new client connected from" << //
+                client->peerAddress().toString() << ":" << client->peerPort();
 
-            client->write("Welcome to SecureEchoServer!\n");
+        client->write("Welcome to SecureEchoServer!\n");
 
-            (void) QObject::connect(client, &QTcpSocket::readyRead, [client]() {
-                auto const& data = client->readAll();
-                qDebug() << "echoing back: " << data;
+        (void) QObject::connect(client, &QTcpSocket::readyRead, [client]() {
+            auto const& data = client->readAll();
+            qDebug() << "echoing back: " << data;
 
-                client->write(data);
-            });
-
-            (void) QObject::connect(client, &QTcpSocket::disconnected, [client]() {
-                qDebug() << "client from" << //
-                        client->peerAddress().toString() << ":" << client->peerPort()
-                         << "disconnected";
-            });
+            client->write(data);
         });
 
+        (void) QObject::connect(client, &QTcpSocket::disconnected, [client]() {
+            qDebug() << "client from" << //
+                    client->peerAddress().toString() << ":" << client->peerPort() << "disconnected";
+        });
+    });
 
-        if (!srv.listen(interface, port))
-        {
-            throw std::logic_error(QString("unable to listen to %1:%2")
-                                           .arg(interface.toString())
-                                           .arg(port)
-                                           .toStdString());
-        }
 
-        qDebug() << "secure echo server listening on" << interface << ":" << port << "!";
-        return a.exec();
-    }
-    catch (std::exception const& ex)
+    if (!srv.listen(interface, port))
     {
-        qCritical() << "exception: " << ex.what();
+        qCritical() << "unable to listen to" << interface << ":" << port << "!";
         return 1;
     }
+
+    qDebug() << "secure echo server listening on" << interface << ":" << port << "!";
+    return a.exec();
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 }
