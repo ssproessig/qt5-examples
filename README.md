@@ -10,3 +10,11 @@ As additional test, [`StructSerializationTest`] provides a custom templated `cha
 [`TheStruct.h`]: StructSerialization/TheStruct.h
 [`TheStructSerialization.cpp`]: StructSerialization/TheStructSerialization.cpp
 [`StructSerializationTest`]: StructSerialization/StructSerializationTest.cpp
+
+## SslUsage
+...shows how to implement a secure communication with Qt's `QSsl*` classes.
+
+Although the classes still use the name **SSL** (_Secure Socket Layers_), the samples will focus on
+**TLS** (_Transport Layer Security_) >= v1.2, as TLS v1.1 and below are deprecated from 2020 on.
+
+For more information read [SslUsage/README.md](SslUsage/README.md).
