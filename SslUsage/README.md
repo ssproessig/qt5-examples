@@ -107,9 +107,9 @@ so-called **certificates**. Follow-up with
 ![tls_client_server_certificates](tls_client_server_certificates.png)
 
 So, basically the server presents its (orange) certificate to the client while handshaking, the
-client presents it (green) certificate to the server.
+client presents its (green) certificate to the server.
 
-Both can have a fixed list of certificates they except and hence we solved the problem of knowing
+Both can have a fixed list of certificates they accept and hence we solved the problem of knowing
 who we talk to. But: this would again not scale if would need to
 
 Hence, client and server need to agree on a shared authority that both trust, a so-called
@@ -157,7 +157,7 @@ Verifying - Enter pass phrase for CA.key:
 - create the **CA certificate**
 
 ```
-g:\Code\github\qt5-examples>openssl req -x509 -new -nodes -key CA.key -sha256 -days 365 -out CA.pem
+>openssl req -x509 -new -nodes -key CA.key -sha256 -days 365 -out CA.pem
 
 Enter pass phrase for CA.key:
 You are about to be asked to enter information that will be incorporated
@@ -226,7 +226,7 @@ Signature ok subject=C = DE, ST = Berlin, L = Berlin, O = github.com/ssproessig,
 
 - have a look at the certificate
 ```
-g:\Code\github\qt5-examples\SslUsage\Credentials>openssl x509 -in server.pem -text -noout
+>openssl x509 -in server.pem -text -noout
 Certificate:
     Data:
         Version: 1 (0x0)
