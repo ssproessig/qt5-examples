@@ -55,6 +55,7 @@ int main(int argc, char** argv)
         a.quit();
     });
 
+    qInfo() << "connecting to" << host << ":" << port << "...";
     s.connectToHostEncrypted(host, port);
     if (s.waitForEncrypted(5000))
     {
