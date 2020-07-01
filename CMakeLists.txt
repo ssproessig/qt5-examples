@@ -11,6 +11,7 @@ project(QtExamples LANGUAGES CXX)
 find_package(Qt5 5.15 REQUIRED COMPONENTS Core Network Test)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 
 
