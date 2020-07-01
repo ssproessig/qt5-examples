@@ -1,4 +1,29 @@
 # Qt TLS usage
+
+* [Raw TCP server and client](#raw-tcp-server-and-client)
+  + [Server](#server)
+  + [Client](#client)
+* [Securing the communication](#securing-the-communication)
+  + [Finding a solution for 1.](#finding-a-solution-for-1)
+  + [Finding a solution for 2.](#finding-a-solution-for-2)
+  + [Find a solution for 3. and 4.](#find-a-solution-for-3-and-4)
+  + [Putting everything together](#putting-everything-together)
+  + [Creating certificates](#creating-certificates)
+    - [for the CA](#for-the-ca)
+    - [for the server](#for-the-server)
+    - [for the first client](#for-the-first-client)
+    - [for the other CA's client](#for-the-other-ca-s-client)
+  + [Caveats](#caveats)
+  + [Putting it all together - SecureEchoService](#putting-it-all-together---secureechoservice)
+    - [Secured Server](#secured-server)
+    - [Secured Client](#secured-client)
+    - [Execution](#execution)
+      * [Step 1 - start the server](#step-1---start-the-server)
+      * [Step 2 - connect the client w/ verification failing](#step-2---connect-the-client-w--verification-failing)
+      * [Step 3 - connect the client w/ verification succeeding](#step-3---connect-the-client-w--verification-succeeding)
+      * [Step 4 - connect the client w/ a valid certificate from Other_CA](#step-4---connect-the-client-w--a-valid-certificate-from-other-ca)
+  + [More Information on SSL/TLS](#more-information-on-ssl-tls)
+
 ## Raw TCP server and client
 A raw TCP server and client w/o SSL can be found in [SslUsage/RawEchoService](RawEchoService). The
 example uses a command-line parser to configure `interface` and `port` to listen to and can also be
