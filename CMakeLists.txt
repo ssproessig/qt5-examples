@@ -33,6 +33,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     list(APPEND COMPILE_OPTIONS  
         /W4
         /experimental:external /external:anglebrackets /external:W0
+        /D_CRT_SECURE_NO_WARNINGS
     )
 endif()
 
