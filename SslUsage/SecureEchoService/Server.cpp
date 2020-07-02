@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     }
 
     qDebug() << "secure echo server listening on" << interface << ":" << port << "!";
-    return a.exec();
+    return QCoreApplication::exec();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     QObject::connect(&s, &QTcpSocket::readyRead, [&s, &a]() {
         auto const data = s.readAll();
         qDebug() << "received: " << data;
-        a.quit();
+        QCoreApplication::quit();
     });
 
     qInfo() << "connecting to" << host << ":" << port << "...";
@@ -71,5 +71,5 @@ int main(int argc, char** argv)
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    return a.exec();
+    return QCoreApplication::exec();
 }

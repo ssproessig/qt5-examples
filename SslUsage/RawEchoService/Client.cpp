@@ -28,11 +28,11 @@ int main(int argc, char** argv)
     QObject::connect(&s, &QTcpSocket::readyRead, [&s, &a]() {
         auto const data = s.readAll();
         qDebug() << "received: " << data;
-        a.quit();
+        QCoreApplication::quit();
     });
 
     s.connectToHost(host, port);
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    return a.exec();
+    return QCoreApplication::exec();
 }
