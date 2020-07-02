@@ -36,7 +36,7 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
     QByteArray serialized;
     {
         QBuffer buffer(&serialized);
-        buffer.open(QIODevice::WriteOnly);
+        QVERIFY(buffer.open(QIODevice::WriteOnly));
         QDataStream serializer(&buffer);
 
         serializer << in;
@@ -49,7 +49,7 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
     TheStruct out;
     {
         QBuffer buffer(&serialized);
-        buffer.open(QIODevice::ReadOnly);
+        QVERIFY(buffer.open(QIODevice::ReadOnly));
         QDataStream serializer(&buffer);
 
         serializer >> out;
