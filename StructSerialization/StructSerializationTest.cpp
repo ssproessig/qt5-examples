@@ -28,7 +28,7 @@ void StructSerializationTest::testThatSerializationRestoresAStructCorrectly()
             "id",
             {TheStruct::SubStruct {"tool1", {{2020, 2, 16}, {12, 34, 56}, Qt::UTC}, true},
              TheStruct::SubStruct {"tool2", {{1999, 5, 13}, {23, 45, 6}, Qt::LocalTime}, false}},
-            0xDEADBEEF,
+            0xDEADBEEFU,
             TheStruct::ProtocolEnum::Valid,
             true};
 

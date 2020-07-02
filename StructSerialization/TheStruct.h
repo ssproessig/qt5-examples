@@ -21,7 +21,7 @@ struct TheStruct
 
     QList<SubStruct> subStructs;
 
-    quint32 multiByteValue = 0;
+    quint32 multiByteValue = 0U;
 
     ProtocolEnum protocol = ProtocolEnum::Invalid;
 
