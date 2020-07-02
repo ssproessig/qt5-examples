@@ -4,13 +4,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 
 
-project(Qt5Examples LANGUAGES CXX)
+project(QtExamples LANGUAGES CXX)
 
 
 
-find_package(Qt5 5.15 REQUIRED COMPONENTS Core Test)
+find_package(Qt5 5.15 REQUIRED COMPONENTS Core Network Test)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 
 
@@ -37,6 +38,7 @@ endif()
 
 
 
+add_subdirectory(SslUsage)
 add_subdirectory(StructSerialization)
 
 
