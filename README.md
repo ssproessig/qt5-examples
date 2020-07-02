@@ -18,3 +18,8 @@ Although the classes still use the name **SSL** (_Secure Socket Layers_), the sa
 **TLS** (_Transport Layer Security_) >= v1.2, as TLS v1.1 and below are deprecated from 2020 on.
 
 For more information read [SslUsage/README.md](SslUsage/README.md).
+
+## PBKDF2 for Qt 5.9
+... [a backport of the excellent QPasswordDigestor for usage with old Qt 5.9][PBKDF2] projects.
+
+[PBKDF2]: PBKDF2_for_Qt_5_9
