@@ -21,7 +21,7 @@ struct SecureServer final : QTcpServer
 
     void incomingConnection(qintptr const aSocketDescriptor) override
     {
-        auto* sslSocket = new QSslSocket(this);
+        auto* const sslSocket = new QSslSocket(this);
 
         if (sslSocket->setSocketDescriptor(aSocketDescriptor))
         {

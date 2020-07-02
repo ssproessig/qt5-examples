@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication const a(argc, argv);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("RawEchoServer application");
