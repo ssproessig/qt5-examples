@@ -288,13 +288,13 @@ Certificate:
     already exists, and use the `Other_CA` to sign
 
 ### Caveats
-- `openssl` may try to use a not existing `openssl.conf` and fail - use environment variable
+- `openssl` may try to use a non-existent `openssl.conf` and fail - use environment variable
   `OPENSSL_CONF` to point to the correct one ... and think about to things like _Country Name_,
   _Locality Name_ etc. there directly to avoid typing it over and over again
 - Qt probably uses `openssl` as SSL/TLS plugin library - hence the applications will compile and
   run, but SSL will not work, unless `libcrypto-1_1-x64.dll` and `libssl-1_1-x64.dll` are on the
-  `PATH` - hint: if the applications fail to load the `key` and `cert` at startup this is probably
-  what's hapenning
+  `PATH`. (Hint: if the applications fail to load the `key` and `cert` at startup, this is probably
+  what's happening.)
 
 ### Putting it all together - SecureEchoService
 #### Secured Server
@@ -368,7 +368,7 @@ The client basically uses the same logic as the raw echo client, but
 ##### Step 1 - start the server
 first we start the server into its own window
 ```
-> F:\2019\qt5ex>start SslUsage\SecureEchoService\Debug\SslUsage.SecureServer.exe
+>start SslUsage\SecureEchoService\Debug\SslUsage.SecureServer.exe
 
 ...
 20200701_215310.172  D  loadKey:28  error loading key? false
@@ -384,7 +384,7 @@ ensure
 
 ##### Step 2 - connect the client w/ verification failing
 ```
-F:\2019\qt5ex>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe
+>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe
 
 20200701_215441.668  D  loadCert:38  error loading cert? false
 20200701_215441.672  I  loadCert:39  Loaded certificate:  QSslCertificate("1", "5c:57:ab:ab:07:39:b2:23:37:f7:55:36:a8:9c:2c:50:0a:7a:67:4e", "iRwlqgrODXY4RHdM2my3NA==", "CA", "client_01", QMap(), QDateTime(2020-07-01 19:26:41.000 UTC Qt::UTC), QDateTime(2020-07-31 19:26:41.000 UTC Qt::UTC))
@@ -426,8 +426,8 @@ Why did it fail? The server's log will not help us
 20200701_215737.894  D  main::::operator():78  new client connected from "127.0.0.1" : 53010
 20200701_215738.013  D  main::::()::::operator():91  client from "127.0.0.1" : 53010 disconnected
 ```
-obviously the client terminated the connection. Again, why Because per default we connect to
-`127.0.0.1` (where our server is listening per default). But this is not the server's certificate
+obviously the client terminated the connection. This happens, because by default we connect to
+`127.0.0.1` (where our server is listening by default). But this is not the server's certificate
 _Common Name_, it says `server`.
 
 ##### Step 3 - connect the client w/ verification succeeding
@@ -437,7 +437,7 @@ resolve `server` to where our server is currently running. Adding `127.0.0.1 ser
 
 Afterwards executing the client again leads to
 ```
-F:\2019\qt5ex>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe --host server
+>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe --host server
 20200701_220121.338  D  loadCert:38  error loading cert? false
 20200701_220121.341  I  loadCert:39  Loaded certificate:  QSslCertificate("1", "5c:57:ab:ab:07:39:b2:23:37:f7:55:36:a8:9c:2c:50:0a:7a:67:4e", "iRwlqgrODXY4RHdM2my3NA==", "CA", "client_01", QMap(), QDateTime(2020-07-01 19:26:41.000 UTC Qt::UTC), QDateTime(2020-07-31 19:26:41.000 UTC Qt::UTC))
 20200701_220121.355  D  loadKey:28  error loading key? false
@@ -465,7 +465,7 @@ Finally we test using a valid certificate that was signed by `Other_CA`, which i
 server and client share:
 
 ```
-F:\2019\qt5ex>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe --host server --cert ":/Other_Certificate" --key ":/Other_Key"
+>SslUsage\SecureEchoService\Debug\SslUsage.SecureClient.exe --host server --cert ":/Other_Certificate" --key ":/Other_Key"
 20200701_222834.313  D  loadCert:39  error loading cert? false
 20200701_222834.318  I  loadCert:40  Loaded certificate:  QSslCertificate("1", "1c:2f:35:6c:f0:d9:69:ff:a7:86:90:e2:06:0f:0b:99:c1:d2:3f:01", "FNEz+n2H8csFypB8UT49hw==", "Other_CA", "client_01", QMap(), QDateTime(2020-07-01 20:13:17.000 UTC Qt::UTC), QDateTime(2020-07-31 20:13:17.000 UTC Qt::UTC))
 20200701_222834.328  D  loadKey:29  error loading key? false
