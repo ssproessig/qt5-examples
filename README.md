@@ -1,5 +1,10 @@
 # A collection of Qt examples
 
+## HTML -> WebEngine -> PDF
+Basically the idea is: use Chromium as PDF Report generator.
+
+For more information read [WebEnginePdf/README.md](WebEnginePdf/README.md).
+
 ## StructSerialization
 ...deals with serializing [`TheStruct.h`] to Qt's build serialization format with `QDataStream`,
 especially for custom types and `enum`s in [`TheStructSerialization.cpp`].

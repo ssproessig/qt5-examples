@@ -8,10 +8,16 @@ project(QtExamples LANGUAGES CXX)
 
 
 
-find_package(Qt5 5.15 REQUIRED COMPONENTS Core Network Test)
+find_package(Qt5 5.15 REQUIRED COMPONENTS
+    Core Network Test
+    Gui Widgets
+    WebEngine WebEngineWidgets
+    Pdf PdfWidgets
+)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 
 
@@ -41,6 +47,7 @@ endif()
 
 add_subdirectory(SslUsage)
 add_subdirectory(StructSerialization)
+add_subdirectory(WebEnginePdf)
 
 
 
