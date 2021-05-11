@@ -62,7 +62,7 @@ The following optional components must be installed
     connect(ui->pdfView->pageNavigation(), &QPdfPageNavigation::currentPageChanged, [=]() {
         d->updatePageLabel();
     });
-    
+
     // ... with ...
 
 struct WebEnginePdf::Data
@@ -76,7 +76,13 @@ struct WebEnginePdf::Data
 };
 ```
 
-## ToDo
-- experiment with CSS media queries
-- add SVG images
-- experiment with page headers and footers to every page (like _"page 1 of 3"_ in the footer)
+## Embedded Resources
+The project contains several test resources, already embedded into Qt's resource system:
+- [a simple HTML page](html/sample.html)
+- [a paged HTML page](html_paged/sample.html), same as the simple HTML page, but using the
+  [paged.js] polyfill to support CSS 3 `@page` and page numbering
+- [a simple XML + XSLT](xml), example XML + XSLT from [W3Schools] to demonstrate how Chrome may
+  render structured data in XML with an XSLT
+
+[paged.js]: https://www.pagedjs.org/
+[W3Schools]: https://www.w3schools.com/xml/xml_examples.asp
