@@ -52,7 +52,7 @@ WebEnginePdf::WebEnginePdf() : d(std::make_unique<Data>())
     }
     ui->edUrl->addItems(resources);
 
-    // connect signal and slots
+    // open URL by selecting from ComboBox or entering an arbitrary URL
     auto const openUrl = [=]() {
         if (auto const url = ui->edUrl->currentText().trimmed(); !url.isEmpty())
         {
@@ -64,11 +64,22 @@ WebEnginePdf::WebEnginePdf() : d(std::make_unique<Data>())
     connect(ui->edUrl->lineEdit(), &QLineEdit::returnPressed, openUrl);
     connect(ui->edUrl, QOverload<int>::of(&QComboBox::currentIndexChanged), openUrl);
 
+    // or just write your own HTML and send it directly to the browser
     connect(ui->btnToBrowser, &QPushButton::clicked, [=]() {
         ui->webView->setHtml(ui->edHtmlSource->toPlainText());
         ui->tabWidget->setCurrentWidget(ui->tabWebWidget);
     });
 
+
+    // block saving to PDF while the HTML is still being loaded
+    connect(ui->webView, &QWebEngineView::loadStarted, [=]() {
+        ui->btnSavePDF->setEnabled(false);
+    });
+    connect(ui->webView, &QWebEngineView::loadFinished, [=]() {
+        ui->btnSavePDF->setEnabled(true);
+    });
+
+    // saving to PDF
     connect(ui->btnSavePDF, &QPushButton::clicked, [=]() {
         if (auto* const page = ui->webView->page(); page)
         {
@@ -78,6 +89,8 @@ WebEnginePdf::WebEnginePdf() : d(std::make_unique<Data>())
         }
     });
 
+
+    // PDF loading and navigation
     connect(ui->btnLoadPDF, &QPushButton::clicked, [=]() {
         d->document->load(d->filename);
         ui->pdfView->setDocument(d->document);
