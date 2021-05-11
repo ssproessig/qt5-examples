@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/embedded">
+        <file>html/sample.html</file>
+
+        <file>html_paged/sample.html</file>
+        <file>html_paged/paged.polyfill.js</file>
+
+        <file>xml/cdcatalog.xml</file>
+        <file>xml/cdcatalog.xsl</file>
+    </qresource>
+</RCC>

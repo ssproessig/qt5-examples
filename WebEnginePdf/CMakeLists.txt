@@ -1,6 +1,7 @@
 add_executable(WebEnginePdf WIN32
     WebEnginePdf.h
     WebEnginePdf.cpp
+    WebEnginePdf.qrc
     WebEnginePdf.ui
     main.cpp
 )

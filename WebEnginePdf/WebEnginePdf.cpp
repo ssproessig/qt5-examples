@@ -3,6 +3,8 @@
 #include "ui_WebEnginePdf.h"
 
 #include <QDir>
+#include <QDirIterator>
+#include <QLineEdit>
 #include <QPageLayout>
 #include <QPdfDocument>
 #include <QPdfPageNavigation>
@@ -35,9 +37,35 @@ WebEnginePdf::WebEnginePdf() : d(std::make_unique<Data>())
     ui->setupUi(this);
     resize(384, 443);
 
+    // populate all embedded resources into the combobox
+    QRegularExpression const re(":/embedded/[a-zA-Z-_/]+((\\.htm[l]?)|(\\.xml))");
+    QStringList resources {""};
+    QDirIterator it(":", QDirIterator::Subdirectories);
+    while (it.hasNext())
+    {
+        auto const& url = it.next();
+        qDebug() << url;
+        if (re.match(url).hasMatch())
+        {
+            resources.append("qrc://" + url.mid(1));
+        }
+    }
+    ui->edUrl->addItems(resources);
+
+    // connect signal and slots
+    auto const openUrl = [=]() {
+        if (auto const url = ui->edUrl->currentText().trimmed(); !url.isEmpty())
+        {
+            ui->webView->setUrl(QUrl(url));
+
+            ui->tabWidget->setCurrentWidget(ui->tabWebWidget);
+        }
+    };
+    connect(ui->edUrl->lineEdit(), &QLineEdit::returnPressed, openUrl);
+    connect(ui->edUrl, QOverload<int>::of(&QComboBox::currentIndexChanged), openUrl);
+
     connect(ui->btnToBrowser, &QPushButton::clicked, [=]() {
         ui->webView->setHtml(ui->edHtmlSource->toPlainText());
-
         ui->tabWidget->setCurrentWidget(ui->tabWebWidget);
     });
 
